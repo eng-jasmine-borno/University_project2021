@@ -1,8 +1,9 @@
 package com.jasmineborno129.university_project_android;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
@@ -12,31 +13,33 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+public class RegisterActivity extends AppCompatActivity {
 
-
-public class LoginActivity extends AppCompatActivity {
-
-    TextView go_to_signup;
+    TextView go_to_login;
     ImageView show_pass,hide_pass;
-    EditText username,password;
-    Button login;
+    EditText username,password,email,confirm_password;
+    Button register;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_register);
 
-        setContentView(R.layout.activity_login);
-
-        go_to_signup = findViewById(R.id.go_to_signup);
+        go_to_login = findViewById(R.id.go_to_login);
         show_pass= findViewById(R.id.show_password);
         hide_pass=findViewById(R.id.hide_password);
         username= findViewById(R.id.username);
         password=findViewById(R.id.password);
-        login = findViewById(R.id.login);
-        go_to_signup.setOnClickListener(new View.OnClickListener() {
+        email= findViewById(R.id.email);
+        confirm_password= findViewById(R.id.confirm_password);
+        register = findViewById(R.id.create);
+
+
+        go_to_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent =new Intent(LoginActivity.this,RegisterActivity.class);
+                Intent intent =new Intent(RegisterActivity.this,LoginActivity.class);
                 startActivity(intent);
             }
         });
@@ -62,28 +65,41 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        login.setOnClickListener(new View.OnClickListener() {
+
+        register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 String mUsername = username.getText().toString();
-
+                String mEmail = email.getText().toString();
                 String mPassword = password.getText().toString();
+                String mConfirm_password = password.getText().toString();
 
                 if(mUsername.isEmpty()){
-                    Toast.makeText(LoginActivity.this, "Username required", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Username required", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(mEmail.isEmpty()){
+                    Toast.makeText(RegisterActivity.this, "Email required", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if(mPassword.isEmpty()){
-                    Toast.makeText(LoginActivity.this, "Password required", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Password required", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(mConfirm_password.isEmpty()){
+                    Toast.makeText(RegisterActivity.this, "Confirm password required", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(! mPassword.equals(mConfirm_password)){
+                    Toast.makeText(RegisterActivity.this, "Confirm password required", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
 
-                //TODO Login *****-*** :)--(:
+                //TODO Register *****-*** :)--(:
 
             }
         });
-
     }
 }

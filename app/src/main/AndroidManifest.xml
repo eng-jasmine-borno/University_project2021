@@ -10,8 +10,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.University_project">
         <activity
+            android:name=".RegisterActivity"
+            android:exported="true" />
+        <activity
             android:name=".SplashActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,10 +23,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="true">
-
-        </activity>
-
+            android:exported="true"></activity>
         <activity
             android:name=".LoginActivity"
             android:exported="true" />

@@ -10,6 +10,8 @@ import android.widget.TextView;
 public class SplashActivity extends AppCompatActivity {
 
 
+    private static final int SPLASH_TIME = 5000;
+
     TextView next;
 
     @Override
@@ -31,4 +33,26 @@ public class SplashActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    super.run();
+                    sleep(SPLASH_TIME);
+                } catch (InterruptedException e) {
+                    //caught an exception
+                } finally {
+                    startActivity(new Intent(SplashActivity.this,LoginActivity.class));
+                }
+            }
+        };
+        thread.start();
+    }
+
+
+
 }
