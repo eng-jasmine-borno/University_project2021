@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.auth.LoginActivity"
+    tools:context=".ui.auth.Sign_upActivity"
     android:background="@color/white"
 
     android:orientation="vertical"
@@ -17,7 +17,7 @@
         android:textColor="@color/primary_color"
         android:textSize="32sp"
         android:layout_gravity="center"
-         />
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Welcome Back"
+            android:text="Create New Account"
             android:textSize="24sp"
             android:textColor="@color/primary_color"/>
 
@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="If you are already have an account, log in"
+            android:text="If you are already have an account"
             android:textSize="16sp"
             android:textColor="@color/hint_color"
             android:layout_marginTop="8dp"/>
@@ -54,6 +54,22 @@
             android:hint="Username"
             android:textColor="@color/black"
             android:inputType="text"
+            android:layoutDirection="ltr"
+            android:textDirection="ltr"
+            android:textSize="16sp"
+            android:background="@drawable/ed_background"
+            />
+
+        <EditText
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:hint="Email"
+            android:textColor="@color/black"
+            android:inputType="textEmailAddress"
             android:layoutDirection="ltr"
             android:textDirection="ltr"
             android:textSize="16sp"
@@ -105,14 +121,45 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/ed_background"
+
+            >
+
+            <EditText
+                android:id="@+id/re_password"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_weight="1"
+                android:background="@drawable/ed_background"
+                android:hint="Re Password"
+                android:inputType="textPassword"
+                android:layoutDirection="ltr"
+                android:textColor="@color/black"
+                android:textDirection="ltr"
+                android:textSize="16sp"
+                />
+
+
+
+
+
+        </LinearLayout>
+
 
         <Button
-            android:id="@+id/login"
+            android:id="@+id/create"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="32dp"
             android:background="@drawable/ripple_button_background"
-            android:text="Login"
+            android:text="Create"
             android:textAllCaps="false"
             android:textColor="@color/white"/>
 
@@ -128,19 +175,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="You don't have account?"
+                android:text="You have an account?"
                 android:textColor="@color/black"
                 android:textSize="16sp"
-                 />
+                />
             <TextView
-                android:id="@+id/signup"
+                android:id="@+id/login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text=" Sign up"
+                android:text=" Login"
                 android:textColor="@color/primary_color"
                 android:textSize="16sp"
-                 />
+                />
         </LinearLayout>
 
     </LinearLayout>
