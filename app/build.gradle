@@ -4,7 +4,9 @@ plugins {
 
 android {
     compileSdk 31
-
+    buildFeatures {
+        viewBinding = true
+    }
     defaultConfig {
         applicationId "com.jasmineborno129.university_project_android"
         minSdk 21
