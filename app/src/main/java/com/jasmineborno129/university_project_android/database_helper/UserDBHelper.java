@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class UserDBHelper extends SQLiteOpenHelper {
 
     //database name
-    public static final String DATABASE_NAME = "mohanad_computing";
+    public static final String DATABASE_NAME = "jas_computing";
     //database version
     public static final int DATABASE_VERSION = 2;
     public static final String TABLE_NAME = "tbl_users";

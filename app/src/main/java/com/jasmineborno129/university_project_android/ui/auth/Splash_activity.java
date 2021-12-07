@@ -13,7 +13,6 @@ public class Splash_activity extends AppCompatActivity {
 
 
     ActivitySplashBinding binding;
-    //#Created by mohanad alkrunz 26-Oct-2021 computing lab
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
