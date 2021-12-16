@@ -1,21 +1,26 @@
 package com.jasmineborno129.university_project_android.ui.Main;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.jasmineborno129.university_project_android.adapters.BMIRecordsAdapter;
-import com.jasmineborno129.university_project_android.database_helper.BMIDBHelper;
-import com.jasmineborno129.university_project_android.database_helper.UserDBHelper;
 import com.jasmineborno129.university_project_android.databinding.ActivityMainBinding;
+import com.jasmineborno129.university_project_android.firebase.MyFirebaseProvider;
 import com.jasmineborno129.university_project_android.model.BMIRecord;
-import com.jasmineborno129.university_project_android.model.User;
 import com.jasmineborno129.university_project_android.ui.auth.LoginActivity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,76 +28,74 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding ;
 
-    private UserDBHelper userDBHelper;
-    private User user;
-
-    private BMIDBHelper bmidbHelper;
-
-    boolean isLogin = false;
-
-    private SharedPreferences loginPreferences = null;
-    private SharedPreferences.Editor loginPrefsEditor;
-
-    private List<BMIRecord> recordList;
     private BMIRecordsAdapter adapter;
 
+    final List<BMIRecord> my_records = new ArrayList<>();
+
+    FirebaseAuth auth;
+    FirebaseUser user;
+
+    DatabaseReference recordsDBRef, userDBref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        auth = FirebaseAuth.getInstance();
+        user= auth.getCurrentUser();
+        if (auth.getCurrentUser() == null) {
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }
 
         initUI();
-        checkUser();
-        displayUserRecords();
-
+        initDBRef();
+        setData();
 
     }
 
-    private void displayUserRecords() {
+    private void initDBRef() {
+        recordsDBRef = MyFirebaseProvider.getChildDatabaseReference("BMI_Rec");
+        userDBref = MyFirebaseProvider.getChildDatabaseReference("Users");
+        recordsDBRef.keepSynced(true);
+        userDBref.keepSynced(true);
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        if(user == null){
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }
+        binding.welcome.setText("Hi , "+user.getDisplayName());
 
-        List<BMIRecord> tempList = new ArrayList<>();
-        recordList.clear();
-        tempList = bmidbHelper.getRecords();
-        for(int i=0 ; i<tempList.size();i++){
-            if(tempList.get(i).getUID().equals(user.getID())){
-                recordList.add(tempList.get(i));
-            }
-        }
-        if (recordList.size() == 0){
-            binding.recordsRv.setVisibility(View.GONE);
-            binding.noRecords.setVisibility(View.VISIBLE);
-            binding.currentStatus.setText("Unknown");
-        }else{
-            binding.recordsRv.setVisibility(View.VISIBLE);
-            binding.noRecords.setVisibility(View.GONE);
-            binding.currentStatus.setText(recordList.get(recordList.size()-1).getStatus());
-        }
+
+        binding.addFood.setOnClickListener(v->{
+            Intent intent = new Intent(MainActivity.this, com.jasmineborno129.university_project_android.ui.Main.AddFoodActivity.class);
+            startActivity(intent);
+        });
+
+        binding.viewFood.setOnClickListener(v->{
+            Intent intent = new Intent(MainActivity.this, FoodListActivity.class);
+            startActivity(intent);
+        });
+
+        binding.addRecord.setOnClickListener(v->{
+            Intent intent = new Intent(MainActivity.this, com.jasmineborno129.university_project_android.ui.Main.AddRecordActivity.class);
+            startActivity(intent);
+        });
 
     }
 
     private void initUI(){
-        userDBHelper = new UserDBHelper(this);
-        user = new User();
 
-        bmidbHelper = new BMIDBHelper(this);
-
-        recordList = new ArrayList<>();
-        adapter = new BMIRecordsAdapter(recordList);
+        adapter = new BMIRecordsAdapter(my_records);
         binding.recordsRv.setAdapter(adapter);
 
-        loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
-        loginPrefsEditor = loginPreferences.edit();
-
-
-
-
-
         binding.logout.setOnClickListener(v->{
-            loginPrefsEditor.putString("username", "no user");
-            loginPrefsEditor.commit();
+
+            auth.signOut();
 
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -101,37 +104,38 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void checkUser() {
-        ArrayList<User> users_list = userDBHelper.getUsers();
-        for (int i = 0; i < users_list.size(); i++) {
-            if (loginPreferences.getString("username","no user").equals(users_list.get(i).getUsername())) {
-                user.setUsername(users_list.get(i).getUsername());
-                user.setEmail(users_list.get(i).getEmail());
-                user.setID(users_list.get(i).getID());
-                isLogin = true;
-                break;
-            } else {
-                isLogin = false;
-            }
+    public void setData() {
+        my_records.clear();
+        MyFirebaseProvider.getChildDatabaseReference("BMI_Rec").child(user.getUid()).
+                addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        my_records.clear();
+                        for(DataSnapshot snapshot1 : snapshot.getChildren()){
+                            BMIRecord c = snapshot1.getValue(BMIRecord.class);
+                            my_records.add(c);
+                        }
 
-        }
-        binding.welcome.setText("Hi , "+user.getUsername());
-        if(!isLogin){
-            Intent intent = new Intent(MainActivity.this,LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        }
+                        adapter.notifyDataSetChanged();
+                        if(my_records.size()==0){
+                            binding.noRecords.setVisibility(View.VISIBLE);
+                            binding.recordsRv.setVisibility(View.GONE);
 
+                        }else{
+                            Collections.reverse(my_records);
+                            binding.noRecords.setVisibility(View.GONE);
+                            binding.recordsRv.setVisibility(View.VISIBLE);
+                            binding.currentStatus.setText(my_records.get(0).getStatus());
+                        }
+                    }
 
-        binding.addRecord.setOnClickListener(v->{
-            Intent intent = new Intent(MainActivity.this,AddRecordActivity.class);
-            intent.putExtra("uid",user.getID());
-            intent.putExtra("dob",user.getDob());
-            startActivity(intent);
-        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
     }
-
-
 }
 
 

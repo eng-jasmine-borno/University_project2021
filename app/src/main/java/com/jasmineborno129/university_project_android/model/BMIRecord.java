@@ -2,27 +2,46 @@ package com.jasmineborno129.university_project_android.model;
 
 public class BMIRecord {
 
-    private String ID;
+    private String id;
     private String length;
     private String weight;
     private String date;
     private String status;
-    private String UID;
+    private String uid;
+    private String bmi;
+    private boolean is_last = false;
+
+
+    public boolean isIs_last() {
+        return is_last;
+    }
+
+    public void setIs_last(boolean is_last) {
+        this.is_last = is_last;
+    }
+
+    public String getBMI() {
+        return bmi;
+    }
+
+    public void setBMI(String BMI) {
+        this.bmi = BMI;
+    }
 
     public String getUID() {
-        return UID;
+        return uid;
     }
 
     public void setUID(String UID) {
-        this.UID = UID;
+        this.uid = UID;
     }
 
     public String getID() {
-        return ID;
+        return id;
     }
 
     public void setID(String ID) {
-        this.ID = ID;
+        this.id = ID;
     }
 
     public String getLength() {
